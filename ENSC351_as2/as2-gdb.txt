@@ -1,0 +1,488 @@
+gurnek@351-Debian:~/cmpt433/public/myApps$ gdb-multiarch hw_demo 
+GNU gdb (Debian 10.1-1.7) 10.1.90.20210103-git
+Copyright (C) 2021 Free Software Foundation, Inc.
+License GPLv3+: GNU GPL version 3 or later <http://gnu.org/licenses/gpl.html>
+This is free software: you are free to change and redistribute it.
+There is NO WARRANTY, to the extent permitted by law.
+Type "show copying" and "show warranty" for details.
+This GDB was configured as "x86_64-linux-gnu".
+Type "show configuration" for configuration details.
+For bug reporting instructions, please see:
+<https://www.gnu.org/software/gdb/bugs/>.
+Find the GDB manual and other documentation resources online at:
+    <http://www.gnu.org/software/gdb/documentation/>.
+
+For help, type "help".
+Type "apropos word" to search for commands related to "word"...
+Reading symbols from hw_demo...
+(gdb) target remote 192.168.7.2:2001
+Remote debugging using 192.168.7.2:2001
+Reading /lib/ld-linux-armhf.so.3 from remote target...
+warning: File transfers from remote targets can be slow. Use "set sysroot" to access files locally instead.
+Reading /lib/ld-linux-armhf.so.3 from remote target...
+Reading symbols from target:/lib/ld-linux-armhf.so.3...
+Reading /lib/cdd3bebfff72062151d2b9262c1d6b241b3f0d.debug from remote target...
+Reading /lib/.debug/cdd3bebfff72062151d2b9262c1d6b241b3f0d.debug from remote target...
+Reading /usr/lib/debug//lib/cdd3bebfff72062151d2b9262c1d6b241b3f0d.debug from remote target...
+Reading /usr/lib/debug/lib//cdd3bebfff72062151d2b9262c1d6b241b3f0d.debug from remote target...
+Reading target:/usr/lib/debug/lib//cdd3bebfff72062151d2b9262c1d6b241b3f0d.debug from remote target...
+(No debugging symbols found in target:/lib/ld-linux-armhf.so.3)
+0xb6fd5a80 in ?? () from target:/lib/ld-linux-armhf.so.3
+(gdb) list
+37	{
+38		unsigned int i;
+39	    for (i=0; i < size; i++) {
+40			printf("%3u: %05.1f --> %05.1f\n", i, source[i], target[i]);
+41		}
+42	}
+43	
+44	/*
+45	 * Create two arrays; populate them; swap them; display them.
+46	 */
+(gdb) conr
+Undefined command: "conr".  Try "help".
+(gdb) cont
+Continuing.
+Reading /lib/arm-linux-gnueabihf/libc.so.6 from remote target...
+Reading /lib/arm-linux-gnueabihf/89f19a899933c324c6f5dd41234f8ae757c9c4.debug from remote target...
+Reading /lib/arm-linux-gnueabihf/.debug/89f19a899933c324c6f5dd41234f8ae757c9c4.debug from remote target...
+Reading /usr/lib/debug//lib/arm-linux-gnueabihf/89f19a899933c324c6f5dd41234f8ae757c9c4.debug from remote target...
+Reading /usr/lib/debug/lib/arm-linux-gnueabihf//89f19a899933c324c6f5dd41234f8ae757c9c4.debug from remote target...
+Reading target:/usr/lib/debug/lib/arm-linux-gnueabihf//89f19a899933c324c6f5dd41234f8ae757c9c4.debug from remote target...
+
+Program received signal SIGSEGV, Segmentation fault.
+0x004005b6 in swapContent (d1=0x410ff8, d2=0x411050 <completed>) at noworky.c:19
+19		*d1 = tmp;
+(gdb) list
+14	 */
+15	void swapContent(double *d1, double *d2)
+16	{
+17		double tmp = *d2;
+18		*d2 = *d1;
+19		*d1 = tmp;
+20	}
+21	
+22	/*
+23	 * Swap the contents of the two arrays.
+(gdb) print *d1@10
+$1 = {0, 20, 30, 40, 50, 60, 70, 80, 90, 1.8885762539590924e-312}
+(gdb) print *d2@10
+$2 = {0, -8.9614336827017964e-44, 1.781819010389734e-307, 1.7818190100201038e-307, -5.0680139708157451e-44, 1.7818190099695257e-307, 
+  1.7833133812090041e-307, 1.5163502988971642e-314, 1.783204733366288e-307, 2.073060418763849e-317}
+(gdb) bt
+#0  0x004005b6 in swapContent (d1=0x410ff8, d2=0x411050 <completed>) at noworky.c:19
+#1  0x004005ee in tradeArrays (array1=0x412598, array2=0x4125f0, size=10) at noworky.c:29
+#2  0x004006f2 in main () at noworky.c:72
+(gdb) up
+#1  0x004005ee in tradeArrays (array1=0x412598, array2=0x4125f0, size=10) at noworky.c:29
+29			swapContent(array1+i, array2+i);
+(gdb) list
+24	 */
+25	void tradeArrays(double *array1, double *array2, int size)
+26	{
+27		unsigned int i;
+28		for (i = size-1; i >= 0; i--) {
+29			swapContent(array1+i, array2+i);
+30		}
+31	}
+32	
+33	/*
+(gdb) b 29
+Breakpoint 1 at 0x4005d8: file noworky.c, line 29.
+(gdb) info b
+Num     Type           Disp Enb Address    What
+1       breakpoint     keep y   0x004005d8 in tradeArrays at noworky.c:29
+(gdb) cont
+Continuing.
+
+Program terminated with signal SIGSEGV, Segmentation fault.
+The program no longer exists.
+(gdb) target remote 192.168.7.2:2001
+Remote debugging using 192.168.7.2:2001
+Reading /lib/ld-linux-armhf.so.3 from remote target...
+Reading /lib/ld-linux-armhf.so.3 from remote target...
+Reading symbols from target:/lib/ld-linux-armhf.so.3...
+Reading /lib/cdd3bebfff72062151d2b9262c1d6b241b3f0d.debug from remote target...
+Reading /lib/.debug/cdd3bebfff72062151d2b9262c1d6b241b3f0d.debug from remote target...
+Reading /usr/lib/debug//lib/cdd3bebfff72062151d2b9262c1d6b241b3f0d.debug from remote target...
+Reading /usr/lib/debug/lib//cdd3bebfff72062151d2b9262c1d6b241b3f0d.debug from remote target...
+Reading target:/usr/lib/debug/lib//cdd3bebfff72062151d2b9262c1d6b241b3f0d.debug from remote target...
+(No debugging symbols found in target:/lib/ld-linux-armhf.so.3)
+
+Program received signal SIGTRAP, Trace/breakpoint trap.
+0xb6fd5a80 in ?? () from target:/lib/ld-linux-armhf.so.3
+(gdb) cont
+Continuing.
+Reading /lib/arm-linux-gnueabihf/libc.so.6 from remote target...
+Reading /lib/arm-linux-gnueabihf/89f19a899933c324c6f5dd41234f8ae757c9c4.debug from remote target...
+Reading /lib/arm-linux-gnueabihf/.debug/89f19a899933c324c6f5dd41234f8ae757c9c4.debug from remote target...
+Reading /usr/lib/debug//lib/arm-linux-gnueabihf/89f19a899933c324c6f5dd41234f8ae757c9c4.debug from remote target...
+Reading /usr/lib/debug/lib/arm-linux-gnueabihf//89f19a899933c324c6f5dd41234f8ae757c9c4.debug from remote target...
+Reading target:/usr/lib/debug/lib/arm-linux-gnueabihf//89f19a899933c324c6f5dd41234f8ae757c9c4.debug from remote target...
+
+
+Breakpoint 1, tradeArrays (array1=0x412598, array2=0x4125f0, size=10) at noworky.c:29
+29			swapContent(array1+i, array2+i);
+(gdb) list
+24	 */
+25	void tradeArrays(double *array1, double *array2, int size)
+26	{
+27		unsigned int i;
+28		for (i = size-1; i >= 0; i--) {
+29			swapContent(array1+i, array2+i);
+30		}
+31	}
+32	
+33	/*
+(gdb) info args
+array1 = 0x412598
+array2 = 0x4125f0
+size = 10
+(gdb) print i
+$1 = 9
+(gdb) print array1+i
+$2 = (double *) 0x4125e0
+(gdb) print *array1@10
+$3 = {0, 2, 4, 6, 8, 10, 12, 14, 16, 18}
+(gdb) print *array2@10
+$4 = {0, 10, 20, 30, 40, 50, 60, 70, 80, 90}
+(gdb) next
+28		for (i = size-1; i >= 0; i--) {
+(gdb) info local
+i = 9
+(gdb) next
+29			swapContent(array1+i, array2+i);
+(gdb) info local
+i = 8
+(gdb) next
+
+Breakpoint 1, tradeArrays (array1=0x412598, array2=0x4125f0, size=10) at noworky.c:29
+29			swapContent(array1+i, array2+i);
+(gdb) list
+24	 */
+25	void tradeArrays(double *array1, double *array2, int size)
+26	{
+27		unsigned int i;
+28		for (i = size-1; i >= 0; i--) {
+29			swapContent(array1+i, array2+i);
+30		}
+31	}
+32	
+33	/*
+(gdb) print *array1@10
+$5 = {0, 2, 4, 6, 8, 10, 12, 14, 16, 90}
+(gdb) print *array2@10
+$6 = {0, 10, 20, 30, 40, 50, 60, 70, 80, 18}
+(gdb) next
+28		for (i = size-1; i >= 0; i--) {
+(gdb) info local
+i = 8
+(gdb) nex
+Ambiguous command "nex": next, nexti.
+(gdb) next
+29			swapContent(array1+i, array2+i);
+(gdb) info local
+i = 7
+(gdb) next
+
+Breakpoint 1, tradeArrays (array1=0x412598, array2=0x4125f0, size=10) at noworky.c:29
+29			swapContent(array1+i, array2+i);
+(gdb) list
+24	 */
+25	void tradeArrays(double *array1, double *array2, int size)
+26	{
+27		unsigned int i;
+28		for (i = size-1; i >= 0; i--) {
+29			swapContent(array1+i, array2+i);
+30		}
+31	}
+32	
+33	/*
+(gdb) print *array1@10
+^[[A^[[A$7 = {0, 2, 4, 6, 8, 10, 12, 14, 80, 90}
+(gdb) print *array2@10
+$8 = {0, 10, 20, 30, 40, 50, 60, 70, 16, 18}
+(gdb) next
+28		for (i = size-1; i >= 0; i--) {
+(gdb) next
+29			swapContent(array1+i, array2+i);
+(gdb) info local
+i = 6
+(gdb) next
+
+Breakpoint 1, tradeArrays (array1=0x412598, array2=0x4125f0, size=10) at noworky.c:29
+29			swapContent(array1+i, array2+i);
+(gdb) print *array1@10
+$9 = {0, 2, 4, 6, 8, 10, 12, 70, 80, 90}
+(gdb) print *array2@10
+$10 = {0, 10, 20, 30, 40, 50, 60, 14, 16, 18}
+(gdb) next
+28		for (i = size-1; i >= 0; i--) {
+(gdb) next
+29			swapContent(array1+i, array2+i);
+(gdb) info local
+i = 5
+(gdb) next
+
+Breakpoint 1, tradeArrays (array1=0x412598, array2=0x4125f0, size=10) at noworky.c:29
+29			swapContent(array1+i, array2+i);
+(gdb) print *array1@10
+$11 = {0, 2, 4, 6, 8, 10, 60, 70, 80, 90}
+(gdb) print *array2@10
+$12 = {0, 10, 20, 30, 40, 50, 12, 14, 16, 18}
+(gdb) next 
+28		for (i = size-1; i >= 0; i--) {
+(gdb) next
+29			swapContent(array1+i, array2+i);
+(gdb) info local
+i = 4
+(gdb) next
+
+Breakpoint 1, tradeArrays (array1=0x412598, array2=0x4125f0, size=10) at noworky.c:29
+29			swapContent(array1+i, array2+i);
+(gdb) print *array1@10
+$13 = {0, 2, 4, 6, 8, 50, 60, 70, 80, 90}
+(gdb) print *array2@10
+$14 = {0, 10, 20, 30, 40, 10, 12, 14, 16, 18}
+(gdb) next
+28		for (i = size-1; i >= 0; i--) {
+(gdb) next
+29			swapContent(array1+i, array2+i);
+(gdb) info local
+i = 3
+(gdb) next
+
+Breakpoint 1, tradeArrays (array1=0x412598, array2=0x4125f0, size=10) at noworky.c:29
+29			swapContent(array1+i, array2+i);
+(gdb) print *array1@10
+$15 = {0, 2, 4, 6, 40, 50, 60, 70, 80, 90}
+(gdb) print *array2@10
+$16 = {0, 10, 20, 30, 8, 10, 12, 14, 16, 18}
+(gdb) next
+28		for (i = size-1; i >= 0; i--) {
+(gdb) next
+29			swapContent(array1+i, array2+i);
+(gdb) info local
+i = 2
+(gdb) next
+
+Breakpoint 1, tradeArrays (array1=0x412598, array2=0x4125f0, size=10) at noworky.c:29
+29			swapContent(array1+i, array2+i);
+(gdb) print *array1@10
+$17 = {0, 2, 4, 30, 40, 50, 60, 70, 80, 90}
+(gdb) print *array2@10
+$18 = {0, 10, 20, 6, 8, 10, 12, 14, 16, 18}
+(gdb) next
+28		for (i = size-1; i >= 0; i--) {
+(gdb) next
+29			swapContent(array1+i, array2+i);
+(gdb) info local
+i = 1
+(gdb) next
+
+Breakpoint 1, tradeArrays (array1=0x412598, array2=0x4125f0, size=10) at noworky.c:29
+29			swapContent(array1+i, array2+i);
+(gdb) print *array1@10
+$19 = {0, 2, 20, 30, 40, 50, 60, 70, 80, 90}
+(gdb) print *array2@10
+$20 = {0, 10, 4, 6, 8, 10, 12, 14, 16, 18}
+(gdb) next
+28		for (i = size-1; i >= 0; i--) {
+(gdb) next
+29			swapContent(array1+i, array2+i);
+(gdb) info local
+i = 0
+(gdb) next
+
+Breakpoint 1, tradeArrays (array1=0x412598, array2=0x4125f0, size=10) at noworky.c:29
+29			swapContent(array1+i, array2+i);
+(gdb) print *array1@10
+$21 = {0, 10, 20, 30, 40, 50, 60, 70, 80, 90}
+(gdb) print *array2@10
+$22 = {0, 2, 4, 6, 8, 10, 12, 14, 16, 18}
+(gdb) next
+28		for (i = size-1; i >= 0; i--) {
+(gdb) nex
+Ambiguous command "nex": next, nexti.
+(gdb) next
+29			swapContent(array1+i, array2+i);
+(gdb) info local
+i = 4294967295
+(gdb) next
+
+Breakpoint 1, tradeArrays (array1=0x412598, array2=0x4125f0, size=10) at noworky.c:29
+29			swapContent(array1+i, array2+i);
+(gdb) print *array1@10
+$23 = {0, 10, 20, 30, 40, 50, 60, 70, 80, 90}
+(gdb) print *array2@10
+$24 = {0, 2, 4, 6, 8, 10, 12, 14, 16, 18}
+(gdb) next
+28		for (i = size-1; i >= 0; i--) {
+(gdb) next
+29			swapContent(array1+i, array2+i);
+(gdb) info local
+i = 4294967294
+(gdb) next
+
+Breakpoint 1, tradeArrays (array1=0x412598, array2=0x4125f0, size=10) at noworky.c:29
+29			swapContent(array1+i, array2+i);
+(gdb) print *array1@10
+$25 = {0, 10, 20, 30, 40, 50, 60, 70, 80, 90}
+(gdb) print *array2@10
+$26 = {0, 2, 4, 6, 8, 10, 12, 14, 16, 18}
+(gdb) next
+28		for (i = size-1; i >= 0; i--) {
+(gdb) next
+29			swapContent(array1+i, array2+i);
+(gdb) info local
+i = 4294967293
+(gdb) next
+
+Breakpoint 1, tradeArrays (array1=0x412598, array2=0x4125f0, size=10) at noworky.c:29
+29			swapContent(array1+i, array2+i);
+(gdb) cont
+Continuing.
+
+Breakpoint 1, tradeArrays (array1=0x412598, array2=0x4125f0, size=10) at noworky.c:29
+29			swapContent(array1+i, array2+i);
+(gdb) info local
+i = 4294967292
+(gdb) cont
+Continuing.
+
+Breakpoint 1, tradeArrays (array1=0x412598, array2=0x4125f0, size=10) at noworky.c:29
+29			swapContent(array1+i, array2+i);
+(gdb) cont
+Continuing.
+
+Breakpoint 1, tradeArrays (array1=0x412598, array2=0x4125f0, size=10) at noworky.c:29
+29			swapContent(array1+i, array2+i);
+(gdb) cont
+Continuing.
+
+Breakpoint 1, tradeArrays (array1=0x412598, array2=0x4125f0, size=10) at noworky.c:29
+29			swapContent(array1+i, array2+i);
+(gdb) info local
+i = 4294967289
+(gdb) cont
+Continuing.
+
+Breakpoint 1, tradeArrays (array1=0x412598, array2=0x4125f0, size=10) at noworky.c:29
+29			swapContent(array1+i, array2+i);
+(gdb) cont
+Continuing.
+
+Breakpoint 1, tradeArrays (array1=0x412598, array2=0x4125f0, size=10) at noworky.c:29
+29			swapContent(array1+i, array2+i);
+(gdb) cont
+Continuing.
+
+Breakpoint 1, tradeArrays (array1=0x412598, array2=0x4125f0, size=10) at noworky.c:29
+29			swapContent(array1+i, array2+i);
+(gdb) cont
+Continuing.
+
+Breakpoint 1, tradeArrays (array1=0x412598, array2=0x4125f0, size=10) at noworky.c:29
+29			swapContent(array1+i, array2+i);
+(gdb) info local
+i = 4294967285
+(gdb) cont
+Continuing.
+^[[A
+Breakpoint 1, tradeArrays (array1=0x412598, array2=0x4125f0, size=10) at noworky.c:29
+29			swapContent(array1+i, array2+i);
+(gdb) cont
+Continuing.
+
+Breakpoint 1, tradeArrays (array1=0x412598, array2=0x4125f0, size=10) at noworky.c:29
+29			swapContent(array1+i, array2+i);
+(gdb) cont
+Continuing.
+
+Breakpoint 1, tradeArrays (array1=0x412598, array2=0x4125f0, size=10) at noworky.c:29
+29			swapContent(array1+i, array2+i);
+(gdb) cont
+Continuing.
+
+Breakpoint 1, tradeArrays (array1=0x412598, array2=0x4125f0, size=10) at noworky.c:29
+29			swapContent(array1+i, array2+i);
+(gdb) cont
+Continuing.
+
+Breakpoint 1, tradeArrays (array1=0x412598, array2=0x4125f0, size=10) at noworky.c:29
+29			swapContent(array1+i, array2+i);
+(gdb) cont
+Continuing.
+
+Breakpoint 1, tradeArrays (array1=0x412598, array2=0x4125f0, size=10) at noworky.c:29
+29			swapContent(array1+i, array2+i);
+(gdb) cont
+Continuing.
+
+Breakpoint 1, tradeArrays (array1=0x412598, array2=0x4125f0, size=10) at noworky.c:29
+29			swapContent(array1+i, array2+i);
+(gdb) cont
+Continuing.
+
+Breakpoint 1, tradeArrays (array1=0x412598, array2=0x4125f0, size=10) at noworky.c:29
+29			swapContent(array1+i, array2+i);
+(gdb) cont
+Continuing.
+
+Breakpoint 1, tradeArrays (array1=0x412598, array2=0x4125f0, size=10) at noworky.c:29
+29			swapContent(array1+i, array2+i);
+(gdb) cont
+Continuing.
+
+Breakpoint 1, tradeArrays (array1=0x412598, array2=0x4125f0, size=10) at noworky.c:29
+29			swapContent(array1+i, array2+i);
+(gdb) cont
+Continuing.
+
+Breakpoint 1, tradeArrays (array1=0x412598, array2=0x4125f0, size=10) at noworky.c:29
+29			swapContent(array1+i, array2+i);
+(gdb) cont
+Continuing.
+
+Breakpoint 1, tradeArrays (array1=0x412598, array2=0x4125f0, size=10) at noworky.c:29
+29			swapContent(array1+i, array2+i);
+(gdb) cont
+Continuing.
+
+Breakpoint 1, tradeArrays (array1=0x412598, array2=0x4125f0, size=10) at noworky.c:29
+29			swapContent(array1+i, array2+i);
+(gdb) cont
+Continuing.
+
+Breakpoint 1, tradeArrays (array1=0x412598, array2=0x4125f0, size=10) at noworky.c:29
+29			swapContent(array1+i, array2+i);
+(gdb) cont
+Continuing.
+
+Breakpoint 1, tradeArrays (array1=0x412598, array2=0x4125f0, size=10) at noworky.c:29
+29			swapContent(array1+i, array2+i);
+(gdb) info local
+i = 4294967270
+(gdb) delete 1
+(gdb) info break
+No breakpoints or watchpoints.
+(gdb) cont
+Continuing.
+
+Program received signal SIGSEGV, Segmentation fault.
+0x004005b6 in swapContent (d1=0x410ff8, d2=0x411050 <completed>) at noworky.c:19
+19		*d1 = tmp;
+(gdb) up
+#1  0x004005ee in tradeArrays (array1=0x412598, array2=0x4125f0, size=10) at noworky.c:29
+29			swapContent(array1+i, array2+i);
+(gdb) info local
+i = 4294966604
+(gdb) down
+#0  0x004005b6 in swapContent (d1=0x410ff8, d2=0x411050 <completed>) at noworky.c:19
+19		*d1 = tmp;
+(gdb) bt
+#0  0x004005b6 in swapContent (d1=0x410ff8, d2=0x411050 <completed>) at noworky.c:19
+#1  0x004005ee in tradeArrays (array1=0x412598, array2=0x4125f0, size=10) at noworky.c:29
+#2  0x004006f2 in main () at noworky.c:72
+(gdb) 
+
